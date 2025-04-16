@@ -1,19 +1,23 @@
 const express = require("express");
 const productRouter = express.Router();
 const { productController } = require("../services/productService");
-const { validator } = require("../middleware/validator");
-const { existor } = require("../middleware/existor");
+const { validator } = require("../middleware/validator.js");
+const { existor } = require("../middleware/existor.js");
 
 productRouter.get("/", async (req, res) => {
-  await productController.getProducts();
-  res.status(200).json({ success: true, message: "상품 목록 조회 성공" });
+  const products = await productController.getProducts();
+  res
+    .status(200)
+    .json({ success: true, message: "상품 목록 조회 성공", data: products });
 });
 
 productRouter.get("/:name", async (req, res) => {
   const { name } = req.params;
   const product = await productController.getProductByName(name);
   if (product.length === 0) {
-    return res.status(404).json({ success: false, message: "상품 조회 실패" });
+    return res
+      .status(404)
+      .json({ success: false, message: "상품 조회 실패", data: product });
   }
   res
     .status(200)
@@ -22,15 +26,8 @@ productRouter.get("/:name", async (req, res) => {
 
 productRouter.post("/", validator, async (req, res) => {
   const { name, price } = req.body;
-  const product = await productController.createProduct(name, price);
-  if (!name || !price) {
-    return res
-      .status(400)
-      .json({ success: false, message: "상품명과 가격은 필수입니다." });
-  }
-  res
-    .status(201)
-    .json({ success: true, message: "상품 추가 성공", data: product });
+  await productController.createProduct(name, price);
+  res.status(200).json({ success: true, message: "상품 추가 성공" });
 });
 
 productRouter.put("/", existor, async (req, res) => {

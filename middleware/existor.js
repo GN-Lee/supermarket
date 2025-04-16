@@ -1,8 +1,8 @@
+const { productController } = require("../services/productService");
+
 const existor = async (req, res, next) => {
-  const { id } = req.params;
-  const product = await prisma.products.findMany({
-    where: { id },
-  });
+  const { name } = req.params;
+  const product = await productController.getProductByName(name);
   if (!product) {
     return res
       .status(404)

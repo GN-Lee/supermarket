@@ -27,15 +27,15 @@ const productController = {
 
   updateProduct: async (id, name, price) => {
     const products = await prisma.products.update({
-      where: { id },
-      data: { name, price },
+      where: { id: +id },
+      data: { name, price: +price },
     });
     return products;
   },
 
   deleteProduct: async (id) => {
     const products = await prisma.products.delete({
-      where: { id },
+      where: { id: +id },
     });
     return products;
   },

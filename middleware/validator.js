@@ -1,20 +1,19 @@
 const validator = (req, res, next) => {
   const { name, price } = req.body;
 
-  // 이름과 가격을 입력해주세요 : 빈 값 체크
-  if (!name || !price.trim()) {
-    res
+  // 빈 값 체크
+  if (name.trim()) {
+    return res
       .status(400)
-      .json({ success: false, message: "이름과 가격을 입력해주세요." });
+      .json({ success: false, message: "이름을 입력해주세요." });
   }
-  next();
 
-  // 이름과 가격 타입 확인
-  if (typeof name !== "string" || typeof price !== "number") {
-    res
+  if (isNaN(price)) {
+    return res
       .status(400)
-      .json({ success: false, message: "명시된 타입에 따라 입력해주세요." });
+      .json({ success: false, message: "가격은 숫자만 입력해주세요." });
   }
+
   next();
 };
 
